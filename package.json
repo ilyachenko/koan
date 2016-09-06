@@ -17,8 +17,7 @@
     "start": "gulp",
     "test": "node --debug --harmony node_modules/grunt-cli/bin/grunt test",
     "postinstall": "bower install",
-    "postupdate": "bower update",
-    "heroku-postbuild": "gulp build"
+    "postupdate": "bower update"
   },
   "dependencies": {
     "bower": "1.7.9",
