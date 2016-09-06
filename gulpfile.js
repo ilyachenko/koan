@@ -68,8 +68,8 @@ gulp.task('clean', function() {
   del.sync([outputDir + '**', '!client/build', '!client/build/bower_components/**']);
 });
 
-process.env.NODE_ENV !== 'production' && livereload.listen();
-
-gulp.task('default', ['build', 'nodemon', 'watch']);
+gulp.task('default', ['build', 'nodemon', 'watch'], function () {
+  livereload.listen()
+});
 
 gulp.task('build', ['clean', 'html', 'js', 'js:spec', 'sass', 'images']);
