@@ -72,4 +72,4 @@ gulp.task('default', ['clean', 'build', 'nodemon', 'watch'], function () {
   livereload.listen()
 });
 
-gulp.task('build', ['html', 'js', 'js:spec', 'sass', 'images']);
+gulp.task('build', ['html']);
