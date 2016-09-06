@@ -16,7 +16,7 @@
   "scripts": {
     "start": "gulp",
     "test": "node --debug --harmony node_modules/grunt-cli/bin/grunt test",
-    "postinstall": "bower install && node_modules/gulp/bin/gulp.js build",
+    "postinstall": "bower install && ./node_modules/gulp/bin/gulp.js build",
     "postupdate": "bower update"
   },
   "dependencies": {
