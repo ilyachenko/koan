@@ -73,3 +73,7 @@ gulp.task('default', ['build', 'nodemon', 'watch'], function () {
 });
 
 gulp.task('build', ['clean', 'html', 'js', 'js:spec', 'sass', 'images']);
+
+gulp.task('test', function () {
+  console.log('!!!!!!!!!');
+});
