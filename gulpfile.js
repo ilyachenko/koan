@@ -1,10 +1,11 @@
 var fs              = require('fs'),
     del             = require('del'),
     gulp            = require('gulp'),
-    gutil           = require('gulp-util'),
     sass            = require('gulp-sass'),
+    gutil           = require('gulp-util'),
     concat          = require('gulp-concat'),
     nodemon         = require('gulp-nodemon'),
+    sourcemaps      = require('gulp-sourcemaps'),
     livereload      = require('gulp-livereload');
 
 var outputDir       = 'client/build/',
@@ -25,7 +26,9 @@ gulp.task('sass', function() {
 
 gulp.task('js', function() {
   gulp.src(jsSources)
-    .pipe(concat('app.js'))
+    .pipe(sourcemaps.init())
+      .pipe(concat('app.js'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(outputDir))
 });
 
@@ -73,7 +76,3 @@ gulp.task('default', ['build', 'nodemon', 'watch'], function () {
 });
 
 gulp.task('build', ['clean', 'html', 'js', 'js:spec', 'sass', 'images']);
-
-gulp.task('test', function () {
-  console.log('!!!!!!!!!');
-});
