@@ -8,6 +8,8 @@ var fs              = require('fs'),
     sourcemaps      = require('gulp-sourcemaps'),
     livereload      = require('gulp-livereload');
 
+var config          = require('./config').config;
+
 var outputDir       = 'client/build/',
     src             = 'client/src/',
     sassSources     = [src + '**/*.scss'],
@@ -30,6 +32,22 @@ gulp.task('js', function() {
       .pipe(concat('app.js'))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(outputDir))
+});
+
+gulp.task('js:libs', function() {
+  gulp.src(config.client.js)
+    .pipe(sourcemaps.init())
+      .pipe(concat('libs.js'))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(outputDir))
+});
+
+gulp.task('css:libs', function() {
+  gulp.src(config.client.css)
+      .pipe(sourcemaps.init())
+        .pipe(concat('libs.css'))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(outputDir))
 });
 
 gulp.task('js:spec', function() {
@@ -67,6 +85,11 @@ gulp.task('images', function() {
     .pipe(gulp.dest(outputDir))
 });
 
+gulp.task('fonts', function() {
+  gulp.src(config.client.fonts)
+    .pipe(gulp.dest(outputDir + 'fonts'))
+});
+
 gulp.task('clean', function() {
   del.sync([outputDir + '**', '!client/build', '!client/build/bower_components/**']);
 });
@@ -75,4 +98,13 @@ gulp.task('default', ['build', 'nodemon', 'watch'], function () {
   livereload.listen()
 });
 
-gulp.task('build', ['clean', 'html', 'js', 'js:spec', 'sass', 'images']);
+gulp.task('build:js', ['js:libs', 'js', 'js:spec']);
+
+gulp.task('build:css', ['sass', 'css:libs']);
+
+gulp.task('build', [
+  'clean',
+  'html',
+  'build:js', 'build:css', 'js:spec',
+  'images', 'fonts'
+]);
