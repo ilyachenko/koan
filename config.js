@@ -13,12 +13,12 @@ exports.config = {
     css: [
       'client/bower_components/angular-loading-bar/src/loading-bar.css',
       'client/bower_components/bootstrap/dist/css/bootstrap.css',
+      'client/bower_components/bootstrap-social/bootstrap-social.css',
       'client/bower_components/font-awesome/css/font-awesome.css'
     ],
     fonts: [
-      'client/bower_components/bootstrap/fonts/glyphicons-halflings-regular.woff2',
-      'client/bower_components/bootstrap/fonts/glyphicons-halflings-regular.woff',
-      'client/bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf'
+      'client/bower_components/bootstrap/fonts/*.*',
+      'client/bower_components/font-awesome/fonts/*.*'
     ]
   }
 };
