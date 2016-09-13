@@ -10,6 +10,9 @@ var fs              = require('fs'),
 
 var config          = require('./config').config;
 
+var Server          = require('karma').Server,
+    mocha           = require('gulp-mocha');
+
 var outputDir       = 'client/build/',
     src             = 'client/src/',
     sassSources     = [src + '**/*.scss'],
@@ -18,7 +21,7 @@ var outputDir       = 'client/build/',
     jsSources       = [src + '**/*.module.js', src + '**/*.js', '!' + src + '**/*.spec.js'],
     jsSpecs         = [src + '**/*.spec.js'];
 
-gulp.task('sass', function() {
+gulp.task('sass', () => {
   gulp.src(sassSources)
     .pipe(sass({style: 'expanded'}))
     .on('error', gutil.log)
@@ -26,7 +29,7 @@ gulp.task('sass', function() {
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('js', function() {
+gulp.task('js', () => {
   gulp.src(jsSources)
     .pipe(sourcemaps.init())
       .pipe(concat('app.js'))
@@ -34,7 +37,7 @@ gulp.task('js', function() {
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('js:libs', function() {
+gulp.task('js:libs', () => {
   gulp.src(config.client.js)
     .pipe(sourcemaps.init())
       .pipe(concat('libs.js'))
@@ -42,7 +45,7 @@ gulp.task('js:libs', function() {
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('css:libs', function() {
+gulp.task('css:libs', () => {
   gulp.src(config.client.css)
       .pipe(sourcemaps.init())
         .pipe(concat('libs.css'))
@@ -50,12 +53,12 @@ gulp.task('css:libs', function() {
       .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('js:spec', function() {
+gulp.task('js:spec', () => {
   gulp.src(jsSpecs)
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', () => {
   gulp.watch(jsSources, ['js']);
   gulp.watch(sassSources, ['sass']);
   gulp.watch(htmlSources, ['html']);
@@ -63,38 +66,38 @@ gulp.task('watch', function() {
   gulp.watch(['.nodemon', src + '/**']).on('change', livereload.changed);
 });
 
-gulp.task('nodemon', function () {
+gulp.task('nodemon', () => {
   nodemon({
     script: 'app.js',
     ext: 'js',
     ignore: ['client/*'],
     args: ['--debug', '--harmony'],
     env: {'NODE_ENV': 'development'},
-  }).on('restart', function () {
+  }).on('restart', () => {
     fs.writeFileSync('.nodemon', 'restarted');
   })
 });
 
-gulp.task('html', function() {
+gulp.task('html', () => {
   gulp.src(htmlSources)
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('images', function() {
+gulp.task('images', () => {
   gulp.src(imagesSources)
     .pipe(gulp.dest(outputDir))
 });
 
-gulp.task('fonts', function() {
+gulp.task('fonts', () => {
   gulp.src(config.client.fonts)
     .pipe(gulp.dest(outputDir + 'fonts'))
 });
 
-gulp.task('clean', function() {
+gulp.task('clean', () => {
   del.sync([outputDir + '**', '!client/build', '!client/build/bower_components/**']);
 });
 
-gulp.task('default', ['build', 'nodemon', 'watch'], function () {
+gulp.task('default', ['build', 'nodemon', 'watch'], () => {
   livereload.listen()
 });
 
@@ -108,3 +111,21 @@ gulp.task('build', [
   'build:js', 'build:css', 'js:spec',
   'images', 'fonts'
 ]);
+
+gulp.task('karma', done => {
+  new Server({
+    configFile: __dirname + '/test/client/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
+
+gulp.task('mocha:server', () =>
+  gulp.src('test/server/**/*.js')
+  // gulp-mocha needs filepaths so you can't have any plugins before it
+    .pipe(mocha({reporter: 'dot', require: ['should', 'co-mocha']}))
+    .on('close', () => {
+      process.exit(-1);
+    })
+);
+
+gulp.task('test', ['karma', 'mocha:server']);
